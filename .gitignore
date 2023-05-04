@@ -4,3 +4,5 @@ venv
 .vscode
 .env
 __pycache__
+discord.log
+database.db
