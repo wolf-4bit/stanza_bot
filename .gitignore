@@ -1,0 +1,6 @@
+api_key.json
+requirement.txt
+venv
+.vscode
+.env
+__pycache__
