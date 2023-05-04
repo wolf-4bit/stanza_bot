@@ -1,7 +1,6 @@
 from common import helper
-from utility import sheet
+from utility import sheet, database
 import os
-import aiosqlite
 import asyncio
 from discord.ext import tasks
 from view import verification
@@ -34,6 +33,7 @@ class CustomBot(commands.Bot):
     async def setup_hook(self) -> None:
         for cog in commands_list + event_list:
             await self.load_extension(cog)
+        await database.create_table_guard()
         sheet_update_task.start()
         self.add_view(verification.VerificationButton())
 

@@ -11,7 +11,6 @@ class ClientSheet(metaclass=classes.Singleton):
     _values: dict[str, str]
 
     def __init__(self) -> None:
-        print("test")
         self._auth = self.auth()
 
     def auth(self) -> gspread.client.Client:

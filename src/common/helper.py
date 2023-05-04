@@ -1,6 +1,4 @@
 import glob
-import discord
-
 
 def find_py_files(filepath: str) -> list[str]:
     files_list = glob.glob(f"{filepath}/*.py")
