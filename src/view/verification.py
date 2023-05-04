@@ -3,6 +3,7 @@ from common import constant
 from utility import sheet
 import traceback
 from utility import database
+from common import classes
 
 
 class VerificationButton(discord.ui.View):
@@ -37,11 +38,33 @@ class VerificationModal(discord.ui.Modal, title="Enter you Stanza ID!"):
             )
             self.stop()
             return
-        await database.insert_verified_data(stanza_id=self.stanzaid.value, discord_id=interaction.user.id, gender=record, verified = True)
+        value = await database.check_for_verified_data(
+            stanza_id=self.stanzaid.value,
+            discord_id= interaction.user.id
+        )
+        if value is classes.DatabaseCodes.DATA_WITH_STANZA_ID:
+            await interaction.response.send_message(
+                "This Stanza ID is already linked with another account, please contact moderator for further info!", ephemeral=True
+            )
+            self.stop()
+            return
+        if value is classes.DatabaseCodes.DATA_WITH_DISCORD_ID:
+            await interaction.response.send_message(
+                "This Discord ID is already linked with another account, please enter valid stanza ID or contact moderator for further info!", ephemeral=True
+            )
+            self.stop()
+            return
+        if value is classes.DatabaseCodes.NO_DATA:
+            await database.insert_verified_data(
+                stanza_id=self.stanzaid.value,
+                discord_id=interaction.user.id,
+                gender=record.upper(),
+                verified=True,
+            )
         if record.upper() == "FEMALE":
             role = interaction.guild.get_role(constant.BOT_GENDER_ROLE_ID)
             await interaction.user.add_roles(role, reason="Added by Bot verification")
-        await interaction.response.send_message("Verified!", ephemeral=True)
+        await interaction.response.send_message("Verified your entry!", ephemeral=True)
         self.stop()
 
     async def on_error(
